@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import com.onkarnene.synerzip.weather.App
 import com.onkarnene.synerzip.weather.R
+import com.onkarnene.synerzip.weather.models.Error
 import okhttp3.OkHttpClient
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -18,12 +19,6 @@ object NetworkUtils {
 	const val APP_ID = "e38e2a7bab29cdcb280e018f4f18c43d"
 	const val ENDPOINT_WEATHER_BY_CITY_NAME = "data/2.5/weather"
 	private const val BASE_URL = "http://api.openweathermap.org/"
-	
-	private val BAD_REQUEST = Utils.getString(R.string.err_bad_request) to Throwable(Utils.getString(R.string.err_msg_bad_request))
-	private val UNAUTHORIZED = Utils.getString(R.string.err_unauthorized) to Throwable(Utils.getString(R.string.err_msg_unauthorized))
-	private val PAGE_NOT_FOUND = Utils.getString(R.string.err_page_not_found) to Throwable(Utils.getString(R.string.err_msg_page_not_found))
-	private val TIMEOUT = Utils.getString(R.string.err_timeout) to Throwable(Utils.getString(R.string.err_msg_timeout))
-	private val MAINTENANCE_BREAK = Utils.getString(R.string.err_maintenance_break) to Throwable(Utils.getString(R.string.err_msg_maintenance_break))
 	
 	/**
 	 * Creates single instance of retrofit.
@@ -53,19 +48,33 @@ object NetworkUtils {
 	 * If no status code was provided or in case of unidentified status code, It will return default message.
 	 *
 	 * @param code requires to identify exact reason of failure request.
-	 * @param throwable provided by [Retrofit] call.
+	 * @param message provided by [Retrofit] errorBody.
 	 */
 	fun getRequestFailReason(
 			code: Int = DEFAULT_INT,
-			throwable: Throwable? = null
-	) = when (code) {
-		CODE_NO_INTERNET -> Utils.getString(R.string.err_request_fail) to Throwable(Utils.getString(R.string.err_no_internet))
-		HttpURLConnection.HTTP_BAD_REQUEST, HttpURLConnection.HTTP_BAD_METHOD, HttpURLConnection.HTTP_UNSUPPORTED_TYPE -> BAD_REQUEST
-		HttpURLConnection.HTTP_UNAUTHORIZED -> UNAUTHORIZED
-		HttpURLConnection.HTTP_NOT_FOUND, HttpURLConnection.HTTP_NOT_ACCEPTABLE -> PAGE_NOT_FOUND
-		HttpURLConnection.HTTP_CLIENT_TIMEOUT, HttpURLConnection.HTTP_GATEWAY_TIMEOUT -> TIMEOUT
-		HttpURLConnection.HTTP_INTERNAL_ERROR, HttpURLConnection.HTTP_BAD_GATEWAY, HttpURLConnection.HTTP_UNAVAILABLE -> MAINTENANCE_BREAK
-		else -> Utils.getString(R.string.err_something_went_wrong) to (throwable ?: Throwable(Utils.getString(R.string.err_msg_something_went_wrong)))
+			message: String = Utils.getString(R.string.err_msg_something_went_wrong)
+	): Error = when (code) {
+		CODE_NO_INTERNET -> {
+			Error(cause = Utils.getString(R.string.err_request_fail), message = Utils.getString(R.string.err_no_internet))
+		}
+		HttpURLConnection.HTTP_BAD_REQUEST, HttpURLConnection.HTTP_BAD_METHOD, HttpURLConnection.HTTP_UNSUPPORTED_TYPE -> {
+			Error(cause = Utils.getString(R.string.err_bad_request), message = Utils.getString(R.string.err_msg_bad_request))
+		}
+		HttpURLConnection.HTTP_UNAUTHORIZED -> {
+			Error(cause = Utils.getString(R.string.err_unauthorized), message = Utils.getString(R.string.err_msg_unauthorized))
+		}
+		HttpURLConnection.HTTP_NOT_FOUND, HttpURLConnection.HTTP_NOT_ACCEPTABLE -> {
+			Error(cause = Utils.getString(R.string.err_page_not_found), message = Utils.getString(R.string.err_msg_page_not_found))
+		}
+		HttpURLConnection.HTTP_CLIENT_TIMEOUT, HttpURLConnection.HTTP_GATEWAY_TIMEOUT -> {
+			Error(cause = Utils.getString(R.string.err_timeout), message = Utils.getString(R.string.err_msg_timeout))
+		}
+		HttpURLConnection.HTTP_INTERNAL_ERROR, HttpURLConnection.HTTP_BAD_GATEWAY, HttpURLConnection.HTTP_UNAVAILABLE -> {
+			Error(cause = Utils.getString(R.string.err_maintenance_break), message = Utils.getString(R.string.err_msg_maintenance_break))
+		}
+		else -> {
+			Error(cause = Utils.getString(R.string.err_something_went_wrong), message = message)
+		}
 	}
 	
 	/**

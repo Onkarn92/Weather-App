@@ -1,6 +1,6 @@
 package com.onkarnene.synerzip.weather.interfaces
 
-import okhttp3.ResponseBody
+import com.onkarnene.synerzip.weather.models.Error
 import retrofit2.Call
 
 interface HttpOperationCallback<T> {
@@ -10,13 +10,11 @@ interface HttpOperationCallback<T> {
 	 *
 	 * @param call      instance of executed [Call].
 	 * @param result    contains response body.
-	 * @param errorPair contains human readable exception.
-	 * @param errorBody contains error body.
+	 * @param error contains human readable error message and cause.
 	 */
 	fun onResponse(
 			call: Call<T>,
 			result: T? = null,
-			errorPair: Pair<String, Throwable>,
-			errorBody: ResponseBody? = null
+			error: Error
 	)
 }

@@ -1,8 +1,12 @@
 package com.onkarnene.synerzip.weather.network
 
 import androidx.annotation.WorkerThread
+import com.google.gson.Gson
+import com.onkarnene.synerzip.weather.R
 import com.onkarnene.synerzip.weather.interfaces.HttpOperationCallback
+import com.onkarnene.synerzip.weather.models.Error
 import com.onkarnene.synerzip.weather.utilities.NetworkUtils
+import com.onkarnene.synerzip.weather.utilities.Utils
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -29,7 +33,7 @@ class HttpOperationWrapper<T> {
 		if (NetworkUtils.isNetworkAvailable()) {
 			if (isSynchronousCall) executeRequest(call) else enqueueRequest(call)
 		} else {
-			this.callback.onResponse(call, null, NetworkUtils.getRequestFailReason(NetworkUtils.CODE_NO_INTERNET), null)
+			this.callback.onResponse(call, null, NetworkUtils.getRequestFailReason(NetworkUtils.CODE_NO_INTERNET))
 		}
 	}
 	
@@ -44,17 +48,20 @@ class HttpOperationWrapper<T> {
 				call: Call<T>,
 				response: Response<T>
 		) {
-			this@HttpOperationWrapper.callback.onResponse(call,
-			                                              if (NetworkUtils.isValidResponse(response)) response.body() else null,
-			                                              NetworkUtils.getRequestFailReason(response.code()),
-			                                              response.errorBody())
+			val error: Error = response.errorBody()?.string()?.let {
+				val message = Gson().fromJson(it, Error::class.java).message
+				NetworkUtils.getRequestFailReason(response.code(), message)
+			} ?: NetworkUtils.getRequestFailReason(response.code())
+			this@HttpOperationWrapper.callback.onResponse(call, if (NetworkUtils.isValidResponse(response)) response.body() else null, error)
 		}
 		
 		override fun onFailure(
 				call: Call<T>,
 				t: Throwable
 		) {
-			this@HttpOperationWrapper.callback.onResponse(call = call, errorPair = NetworkUtils.getRequestFailReason(throwable = t))
+			this@HttpOperationWrapper.callback.onResponse(call = call,
+			                                              error = NetworkUtils.getRequestFailReason(message = t.localizedMessage
+					                                              ?: Utils.getString(R.string.err_msg_something_went_wrong)))
 		}
 	})
 	
@@ -66,15 +73,20 @@ class HttpOperationWrapper<T> {
 	@WorkerThread
 	private fun executeRequest(call: Call<T>) = try {
 		val response = call.execute()
-		this@HttpOperationWrapper.callback.onResponse(call,
-		                                              if (NetworkUtils.isValidResponse(response)) response.body() else null,
-		                                              NetworkUtils.getRequestFailReason(response.code()),
-		                                              response.errorBody())
+		val error: Error = response.errorBody()?.string()?.let {
+			val message = Gson().fromJson(it, Error::class.java).message
+			NetworkUtils.getRequestFailReason(response.code(), message)
+		} ?: NetworkUtils.getRequestFailReason(response.code())
+		this@HttpOperationWrapper.callback.onResponse(call, if (NetworkUtils.isValidResponse(response)) response.body() else null, error)
 	} catch (e: IOException) {
 		e.printStackTrace()
-		this@HttpOperationWrapper.callback.onResponse(call = call, errorPair = NetworkUtils.getRequestFailReason(throwable = e.cause))
+		this@HttpOperationWrapper.callback.onResponse(call = call,
+		                                              error = NetworkUtils.getRequestFailReason(message = e.localizedMessage
+				                                              ?: Utils.getString(R.string.err_msg_something_went_wrong)))
 	} catch (e: RuntimeException) {
 		e.printStackTrace()
-		this@HttpOperationWrapper.callback.onResponse(call = call, errorPair = NetworkUtils.getRequestFailReason(throwable = e.cause))
+		this@HttpOperationWrapper.callback.onResponse(call = call,
+		                                              error = NetworkUtils.getRequestFailReason(message = e.localizedMessage
+				                                              ?: Utils.getString(R.string.err_msg_something_went_wrong)))
 	}
 }
