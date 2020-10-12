@@ -10,18 +10,22 @@ city name.
 
 ## Table of content
 
-- [Requirements](#requirements)
+- [Requirements Covered](#requirements-covered)
 - [Dependencies](#dependencies)
 - [Usage](#usage)
 - [Contributor](#contributor)
 - [License](#license)
 
-## Requirements
+## Requirements Covered
 
 - Android 6+
+- Kotlin
 - MVVM (Model-View-ViewModel)
 - Android Jetpack
+- Material Design
 - [Travis CI](https://travis-ci.org/)
+- Espresso and JUnit test cases (100% test coverage is not possible due
+  to time limitation.)
 
 ## Dependencies
 
