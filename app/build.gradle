@@ -56,6 +56,12 @@ android {
 	packagingOptions {
 		exclude 'META-INF/atomicfu.kotlin_module'
 	}
+	
+	testOptions {
+		unitTests {
+			includeAndroidResources = true
+		}
+	}
 }
 
 /** List of all support and third-party dependencies for the app module. */
