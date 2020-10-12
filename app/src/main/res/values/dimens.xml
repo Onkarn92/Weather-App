@@ -44,6 +44,7 @@
 	<dimen name="text_22">22sp</dimen>
 	<dimen name="text_24">24sp</dimen>
 	<dimen name="text_26">26sp</dimen>
+	<dimen name="text_30">30sp</dimen>
 	
 	<!--Custom-->
 	<dimen name="error_placeholder_width">150dp</dimen>

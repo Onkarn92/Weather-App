@@ -32,8 +32,11 @@ class MainViewModel(
 		weatherRepo.clearExpiredItems()
 	}
 	
-	fun searchWeatherDetails(query: String) {
-		weatherRepo.searchByCityName(query, this)
+	fun searchWeatherDetails(
+			query: String,
+			forceUpdate: Boolean
+	) {
+		weatherRepo.searchByCityName(query, forceUpdate, this)
 	}
 	
 	fun getWeatherObserver() = weatherDetailsObserver

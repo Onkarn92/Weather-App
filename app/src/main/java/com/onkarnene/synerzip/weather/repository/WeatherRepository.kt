@@ -9,6 +9,7 @@ import com.onkarnene.synerzip.weather.models.Error
 import com.onkarnene.synerzip.weather.models.WeatherDetails
 import com.onkarnene.synerzip.weather.network.HttpOperationWrapper
 import com.onkarnene.synerzip.weather.utilities.NetworkUtils
+import com.onkarnene.synerzip.weather.utilities.PreferencesUtils
 import retrofit2.Call
 
 /**
@@ -36,16 +37,22 @@ class WeatherRepository : HttpOperationCallback<WeatherDetails> {
 	
 	fun searchByCityName(
 			query: String,
+			forceUpdate: Boolean,
 			callback: HttpEventTracker<WeatherDetails>
 	) {
 		weatherEventTracker = callback
 		AppExecutors.diskIO.execute {
-			val splitQuery = query.split(",".toRegex()).first()
-			val weatherDetails: WeatherDetails? = AppDatabase.getInstance().weatherDao().getWeatherDetails(splitQuery)
-			if (weatherDetails != null) {
-				weatherEventTracker?.onCallSuccess(weatherDetails)
+			if (forceUpdate) {
+				// Fetching data forcefully because of the unit changes.
+				httpOperationWrapper.initCall(apiService.searchWeather(query, PreferencesUtils.getUnit().getValue()), this)
 			} else {
-				httpOperationWrapper.initCall(apiService.searchWeather(query), this)
+				val splitQuery = query.split(",".toRegex()).first()
+				val weatherDetails: WeatherDetails? = AppDatabase.getInstance().weatherDao().getWeatherDetails(splitQuery)
+				if (weatherDetails != null) {
+					weatherEventTracker?.onCallSuccess(weatherDetails)
+				} else {
+					httpOperationWrapper.initCall(apiService.searchWeather(query, PreferencesUtils.getUnit().getValue()), this)
+				}
 			}
 		}
 	}

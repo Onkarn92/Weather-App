@@ -1,6 +1,23 @@
 <resources>
 	<string name="app_name">Weather</string>
-	<string name="search_city">Search by city name</string>
+	<string name="search_city">Search city</string>
+	<string name="feels_like">Feels like %s | %s - %s</string>
+	<string name="min_temp">Min. Temp: %s</string>
+	<string name="max_temp">Max. Temp: %s</string>
+	<string name="pressure">Pressure: %s</string>
+	<string name="humidity">Humidity: %s</string>
+	<string name="wind_speed">Wind Speed: %s</string>
+	<string name="clouds">Clouds: %s</string>
+	<string name="rain">Rain: %s</string>
+	<string name="visibility">Visibility: %s</string>
+	<string name="menu_standard">Standard (°K, m/s)</string>
+	<string name="menu_metric">Metric (°C, m/s)</string>
+	<string name="menu_imperial">Imperial (°F, mph)</string>
+	<string name="unit">Unit: %s</string>
+	<string name="current_weather">Current Weather</string>
+	<string name="msg_save_standard">Standard unit selected</string>
+	<string name="msg_save_metric">Metric unit selected</string>
+	<string name="msg_save_imperial">Imperial unit selected</string>
 	
 	<!--Errors-->
 	<string name="err_request_fail">Request Fail</string>
@@ -24,5 +41,5 @@
 	<string name="err_msg_timeout">Due to the server or network unavailability request cannot proceed.</string>
 	<string name="err_msg_maintenance_break">Sorry, the server is under maintenance. Please try again after some time.</string>
 	<string name="err_msg_something_went_wrong">The page you are looking for is not available at the moment, Please try again later.</string>
-	<string name="err_msg_empty_data">Seems like the requested result is not available or you haven\'t search anything yet.</string>
+	<string name="err_msg_empty_data">Seems like the requested result is not available or you haven\'t searched anything yet.</string>
 </resources>

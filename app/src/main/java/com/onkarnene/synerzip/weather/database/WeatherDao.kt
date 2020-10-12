@@ -9,7 +9,7 @@ import com.onkarnene.synerzip.weather.models.WeatherDetails
 @Dao
 interface WeatherDao {
 	
-	@Query("SELECT * FROM WeatherDetails WHERE name = :name")
+	@Query("SELECT * FROM WeatherDetails WHERE name COLLATE NOCASE = :name")
 	fun getWeatherDetails(name: String): WeatherDetails?
 	
 	@Insert(onConflict = OnConflictStrategy.REPLACE)

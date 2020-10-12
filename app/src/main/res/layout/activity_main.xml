@@ -5,15 +5,80 @@
 		xmlns:tools="http://schemas.android.com/tools"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
+		android:background="@color/grey_100"
 		tools:context=".views.MainActivity">
 	
-	<TextView
+	<com.google.android.material.textfield.TextInputLayout
+			style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+			android:id="@+id/searchTextInput"
+			android:layout_width="@dimen/value_0"
+			android:layout_height="wrap_content"
+			android:layout_marginEnd="@dimen/value_10"
+			android:layout_marginStart="@dimen/value_10"
+			android:layout_marginTop="@dimen/value_10"
+			android:hint="@string/search_city"
+			android:textColorHint="@color/black_a38"
+			app:endIconDrawable="@drawable/ic_baseline_search_24"
+			app:endIconTint="@color/colorPrimary"
+			app:endIconMode="custom"
+			app:hintEnabled="true"
+			app:errorIconDrawable="@null"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintTop_toTopOf="parent"
+			app:layout_constraintHorizontal_bias="0.5"
+			app:layout_constraintBottom_toTopOf="@+id/detailsLayout"
+			app:layout_constraintVertical_bias="0.0">
+		
+		<com.google.android.material.textfield.TextInputEditText
+				android:id="@+id/searchEdit"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:focusableInTouchMode="true"
+				android:inputType="textAutoComplete"
+				android:maxLines="1"
+				android:textColor="@color/black_a87"
+				android:textSize="@dimen/text_14" />
+	</com.google.android.material.textfield.TextInputLayout>
+	
+	<RelativeLayout
+			android:id="@+id/detailsLayout"
+			android:layout_width="@dimen/value_0"
+			android:layout_height="@dimen/value_0"
+			android:layout_margin="@dimen/value_10"
+			android:visibility="gone"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintTop_toBottomOf="@+id/searchTextInput"
+			app:layout_constraintHorizontal_bias="0.5">
+		
+		<include
+				layout="@layout/layout_content_main"
+				android:id="@+id/contentLayout"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content" />
+	</RelativeLayout>
+	
+	<ProgressBar
+			android:id="@+id/progress"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="Hello World!"
+			android:indeterminate="true"
+			android:visibility="gone"
 			app:layout_constraintBottom_toBottomOf="parent"
-			app:layout_constraintLeft_toLeftOf="parent"
-			app:layout_constraintRight_toRightOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
 			app:layout_constraintTop_toTopOf="parent" />
-
+	
+	<include
+			layout="@layout/layout_error"
+			android:id="@+id/errorLayout"
+			android:layout_width="@dimen/value_0"
+			android:layout_height="@dimen/value_0"
+			android:visibility="visible"
+			app:layout_constraintBottom_toBottomOf="parent"
+			app:layout_constraintEnd_toEndOf="parent"
+			app:layout_constraintStart_toStartOf="parent"
+			app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

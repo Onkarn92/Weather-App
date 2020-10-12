@@ -22,6 +22,7 @@ fun EditText.showKeyboard() {
  * Hide keyboard, But keep the focus for this [EditText] as it is.
  */
 fun EditText.hideKeyboard() {
+	this.clearFocus()
 	val keyboard = App.getContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager?
 	keyboard?.hideSoftInputFromWindow(this.windowToken, 0)
 }
