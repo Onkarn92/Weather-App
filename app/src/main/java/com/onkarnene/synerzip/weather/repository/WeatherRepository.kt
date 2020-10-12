@@ -48,7 +48,7 @@ class WeatherRepository : HttpOperationCallback<WeatherDetails> {
 			} else {
 				val splitQuery = query.split(",".toRegex()).first()
 				val weatherDetails: WeatherDetails? = AppDatabase.getInstance().weatherDao().getWeatherDetails(splitQuery)
-				if (weatherDetails != null) {
+				if (weatherDetails != null && weatherDetails.expireAt > System.currentTimeMillis()) {
 					weatherEventTracker?.onCallSuccess(weatherDetails)
 				} else {
 					httpOperationWrapper.initCall(apiService.searchWeather(query, PreferencesUtils.getUnit().getValue()), this)
